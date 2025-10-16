@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "powershell -ExecutionPolicy Bypass -File manual-test.ps1",
-    "check": "echo 'Contract syntax validated manually'",
-    "validate": "powershell -ExecutionPolicy Bypass -File manual-test.ps1"
+    "check": "powershell -ExecutionPolicy Bypass -File validate-contract.ps1",
+    "validate": "powershell -ExecutionPolicy Bypass -File validate-contract.ps1"
   },
   "repository": {
     "type": "git",

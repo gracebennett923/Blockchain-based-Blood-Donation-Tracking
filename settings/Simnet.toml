@@ -2,13 +2,13 @@
 name = "simnet"
 
 [accounts.deployer]
-mnemonic = "fetch outside black test wash cover just actual execute nice door want airport betray quantum stamp fish act pen trust portion fatigue scissors vague"
-balance = 100000000000000
+mnemonic = "twice kind fence tip hidden tilt action fragile skin nothing glory cousin green tomorrow spring wrist shed math olympic multiply hip blue scout claw"
+balance = 1000000000000
 
-[accounts.wallet_1] 
-mnemonic = "replace feature future morning burden flip faculty degree thunder picture depend barely"
-balance = 100000000000000
+[accounts.wallet_1]
+mnemonic = "board list obtain sugar hour worth raven scout denial thunder horse logic fury scorpion fold genuine phrase wealth news aim below celery when cabin"
+balance = 1000000000000
 
-[accounts.wallet_2]
-mnemonic = "increase carbon whisper scale wing ask hello grid casual tone valley grace"  
-balance = 100000000000000
+[accounts.wallet_2]  
+mnemonic = "sell invite acquire kitten bamboo drastic junk tilt action fragile skin nothing cousin green tomorrow spring wrist shed math olympic multiply hip blue scout claw"
+balance = 1000000000000
