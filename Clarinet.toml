@@ -1,0 +1,18 @@
+[project]
+name = 'blood-donation-tracker'
+description = 'Blockchain-based Blood Donation Tracking System'
+version = '1.0.0'
+authors = ['gracebennett923 <gracebennett923@gmail.com>']
+telemetry = true
+cache_dir = './.clarinet'
+
+[contracts.blood-donation-tracker]
+path = 'contracts/blood-donation-tracker.clar'
+
+[repl.analysis]
+passes = ['check_checker']
+
+[[repl.analysis.check_checker.passes]]
+pass = 'check_checker'
+
+[project.requirements]

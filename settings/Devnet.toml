@@ -1,0 +1,58 @@
+[network]
+name = "devnet"
+stacks_node_rpc_address = "http://localhost:20443"
+deployment_fee_rate = 10
+
+[accounts.deployer]
+mnemonic = "twice kind fence tip hidden tilt action fragile skin nothing glory cousin green tomorrow spring wrist shed math olympic multiply hip blue scout claw"
+balance = 100000000000000
+# Secret Key: 753b7cc01a1a2e86221266a154af739463fce51219d97e4f856cd7200c3bd2a601
+# Address: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+
+[accounts.wallet_1]
+mnemonic = "sell invite acquire kitten bamboo drastic junk tilt action fragile skin nothing cousin green tomorrow spring wrist shed math olympic multiply hip blue scout claw"
+balance = 100000000000000
+# Secret Key: 7287ba251d44a4d3fd9276c88ce34c5c52a038955511cccaf77e61068649c17801
+# Address: ST1SJ3DTE5DN7X54YDH5D64R3BCB6A2AG2ZQ8YPD5
+
+[accounts.wallet_2]
+mnemonic = "hold chair love burst common correct rough unused frequent vocal tree globe annual tiny dance abandon normal focus major squeeze bottom work tower save"
+balance = 100000000000000
+# Secret Key: 530d9f61984c888536871c6573073bdfc0058896dc1adfe9a6a10dfacadc209101
+# Address: ST2CY5V39NHDPWSXMW9QDT3HC3GD6Q6XX4CFRK9AG
+
+[accounts.wallet_3]
+mnemonic = "cycle puppy glare enroll cost improve round trend wrist mushroom prime crater bundle style few course rough stone decade unlock blue anchor smoke cross"
+balance = 100000000000000
+# Secret Key: d655b2523bcd65e34889725c73064feb17ceb796831c0e111ba1a552b0f31b3901
+# Address: ST2JHG361ZXG51QTKY2NQCVBPPRRE2KZB1HR05NNC
+
+[accounts.wallet_4]
+mnemonic = "board list obtain sugar hour worth raven scout denial thunder horse logic fury scorpion fold genuine phrase wealth news aim below celery when cabin"
+balance = 100000000000000
+
+[accounts.wallet_5]
+mnemonic = "donor list obtain sugar hour worth raven scout denial thunder horse logic fury scorpion fold genuine phrase wealth news aim below celery when cabin"
+balance = 100000000000000
+
+[accounts.wallet_6]
+mnemonic = "differ obtain obtain sugar hour worth raven scout denial thunder horse logic fury scorpion fold genuine phrase wealth news aim below celery when cabin"
+balance = 100000000000000
+
+[accounts.wallet_7]
+mnemonic = "venture favor obtain sugar hour worth raven scout denial thunder horse logic fury scorpion fold genuine phrase wealth news aim below celery when cabin"
+balance = 100000000000000
+
+[accounts.wallet_8]
+mnemonic = "lion misery obtain sugar hour worth raven scout denial thunder horse logic fury scorpion fold genuine phrase wealth news aim below celery when cabin"
+balance = 100000000000000
+
+[accounts.wallet_9]
+mnemonic = "dream pink obtain sugar hour worth raven scout denial thunder horse logic fury scorpion fold genuine phrase wealth news aim below celery when cabin"
+balance = 100000000000000
+
+[contracts.blood-donation-tracker]
+depends_on = []
+path = "contracts/blood-donation-tracker.clar"
+clarity_version = 3
+epoch = "3.0"
