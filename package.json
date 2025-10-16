@@ -1,0 +1,30 @@
+{
+  "name": "blood-donation-tracker",
+  "version": "1.0.0",
+  "description": "Blockchain-based Blood Donation Tracking System",
+  "main": "index.js",
+  "scripts": {
+    "test": "powershell -ExecutionPolicy Bypass -File manual-test.ps1",
+    "check": "powershell -ExecutionPolicy Bypass -File validate-contract.ps1",
+    "validate": "powershell -ExecutionPolicy Bypass -File validate-contract.ps1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gracebennett923/Blockchain-based-Blood-Donation-Tracking.git"
+  },
+  "keywords": [
+    "blockchain",
+    "blood-donation",
+    "stacks",
+    "clarity",
+    "smart-contract"
+  ],
+  "author": "gracebennett923",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gracebennett923/Blockchain-based-Blood-Donation-Tracking/issues"
+  },
+  "homepage": "https://github.com/gracebennett923/Blockchain-based-Blood-Donation-Tracking#readme",
+  "devDependencies": {},
+  "dependencies": {}
+}
