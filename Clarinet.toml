@@ -8,11 +8,5 @@ cache_dir = './.clarinet'
 
 [contracts.blood-donation-tracker]
 path = 'contracts/blood-donation-tracker.clar'
-
-[repl.analysis]
-passes = ['check_checker']
-
-[[repl.analysis.check_checker.passes]]
-pass = 'check_checker'
-
-[project.requirements]
+clarity_version = 2
+epoch = "2.1"

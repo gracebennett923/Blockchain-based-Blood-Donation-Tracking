@@ -2,41 +2,13 @@
 name = "simnet"
 
 [accounts.deployer]
-mnemonic = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon art"
+mnemonic = "fetch outside black test wash cover just actual execute nice door want airport betray quantum stamp fish act pen trust portion fatigue scissors vague"
 balance = 100000000000000
 
-[accounts.wallet_1]
-mnemonic = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon ability"
+[accounts.wallet_1] 
+mnemonic = "replace feature future morning burden flip faculty degree thunder picture depend barely"
 balance = 100000000000000
 
 [accounts.wallet_2]
-mnemonic = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about"
-balance = 100000000000000
-
-[accounts.wallet_3]
-mnemonic = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon above"
-balance = 100000000000000
-
-[accounts.wallet_4]
-mnemonic = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon absent"
-balance = 100000000000000
-
-[accounts.wallet_5]
-mnemonic = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon absorb"
-balance = 100000000000000
-
-[accounts.wallet_6]
-mnemonic = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abstract"
-balance = 100000000000000
-
-[accounts.wallet_7]
-mnemonic = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon absurd"
-balance = 100000000000000
-
-[accounts.wallet_8]
-mnemonic = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abuse"
-balance = 100000000000000
-
-[accounts.wallet_9]
-mnemonic = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon access"
+mnemonic = "increase carbon whisper scale wing ask hello grid casual tone valley grace"  
 balance = 100000000000000
