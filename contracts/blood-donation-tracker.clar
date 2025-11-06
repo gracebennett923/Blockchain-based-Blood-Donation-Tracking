@@ -35,7 +35,7 @@
 (define-data-var donor-id-counter uint u0)
 
 ;; Donor information map
-(define-map donors 
+(define-map donors
   { donor-id: uint }
   {
     donor-address: principal,
@@ -43,7 +43,7 @@
     last-donation-block: uint,
     total-donations: uint,
     is-eligible: bool,
-    registration-block: uint
+    registration-block: uint,
   }
 )
 
@@ -57,37 +57,70 @@
     donation-block: uint,
     status: uint,
     hospital-address: (optional principal),
-    expiry-block: uint
+    expiry-block: uint,
   }
 )
 
 ;; Blood inventory map by blood type
 (define-map blood-inventory
   { blood-type: uint }
-  { available-ml: uint, reserved-ml: uint }
+  {
+    available-ml: uint,
+    reserved-ml: uint,
+  }
 )
 
 ;; Donor address to donor-id mapping
-(define-map donor-address-to-id principal uint)
+(define-map donor-address-to-id
+  principal
+  uint
+)
 
 ;; Hospital authorization map
-(define-map authorized-hospitals principal bool)
+(define-map authorized-hospitals
+  principal
+  bool
+)
 
 ;; Initialize blood inventory for all blood types
-(map-set blood-inventory { blood-type: BLOOD-TYPE-O-POS } { available-ml: u0, reserved-ml: u0 })
-(map-set blood-inventory { blood-type: BLOOD-TYPE-O-NEG } { available-ml: u0, reserved-ml: u0 })
-(map-set blood-inventory { blood-type: BLOOD-TYPE-A-POS } { available-ml: u0, reserved-ml: u0 })
-(map-set blood-inventory { blood-type: BLOOD-TYPE-A-NEG } { available-ml: u0, reserved-ml: u0 })
-(map-set blood-inventory { blood-type: BLOOD-TYPE-B-POS } { available-ml: u0, reserved-ml: u0 })
-(map-set blood-inventory { blood-type: BLOOD-TYPE-B-NEG } { available-ml: u0, reserved-ml: u0 })
-(map-set blood-inventory { blood-type: BLOOD-TYPE-AB-POS } { available-ml: u0, reserved-ml: u0 })
-(map-set blood-inventory { blood-type: BLOOD-TYPE-AB-NEG } { available-ml: u0, reserved-ml: u0 })
+(map-set blood-inventory { blood-type: BLOOD-TYPE-O-POS } {
+  available-ml: u0,
+  reserved-ml: u0,
+})
+(map-set blood-inventory { blood-type: BLOOD-TYPE-O-NEG } {
+  available-ml: u0,
+  reserved-ml: u0,
+})
+(map-set blood-inventory { blood-type: BLOOD-TYPE-A-POS } {
+  available-ml: u0,
+  reserved-ml: u0,
+})
+(map-set blood-inventory { blood-type: BLOOD-TYPE-A-NEG } {
+  available-ml: u0,
+  reserved-ml: u0,
+})
+(map-set blood-inventory { blood-type: BLOOD-TYPE-B-POS } {
+  available-ml: u0,
+  reserved-ml: u0,
+})
+(map-set blood-inventory { blood-type: BLOOD-TYPE-B-NEG } {
+  available-ml: u0,
+  reserved-ml: u0,
+})
+(map-set blood-inventory { blood-type: BLOOD-TYPE-AB-POS } {
+  available-ml: u0,
+  reserved-ml: u0,
+})
+(map-set blood-inventory { blood-type: BLOOD-TYPE-AB-NEG } {
+  available-ml: u0,
+  reserved-ml: u0,
+})
 
 ;; Private functions
 
 ;; Check if blood type is valid
 (define-private (is-valid-blood-type (blood-type uint))
-  (and 
+  (and
     (>= blood-type u1)
     (<= blood-type u8)
   )
@@ -110,74 +143,66 @@
 
 ;; Register a new donor
 (define-public (register-donor (blood-type uint))
-  (let
-    (
+  (let (
       (new-donor-id (+ (var-get donor-id-counter) u1))
       (existing-donor (map-get? donor-address-to-id tx-sender))
     )
     (asserts! (is-valid-blood-type blood-type) ERR-INVALID-BLOOD-TYPE)
     (asserts! (is-none existing-donor) ERR-UNAUTHORIZED)
-    
-    (map-set donors
-      { donor-id: new-donor-id }
-      {
-        donor-address: tx-sender,
-        blood-type: blood-type,
-        last-donation-block: u0,
-        total-donations: u0,
-        is-eligible: true,
-        registration-block: block-height
-      }
-    )
-    
+
+    (map-set donors { donor-id: new-donor-id } {
+      donor-address: tx-sender,
+      blood-type: blood-type,
+      last-donation-block: u0,
+      total-donations: u0,
+      is-eligible: true,
+      registration-block: block-height,
+    })
+
     (map-set donor-address-to-id tx-sender new-donor-id)
     (var-set donor-id-counter new-donor-id)
-    
+
     (ok new-donor-id)
   )
 )
 
 ;; Record a blood donation
 (define-public (record-donation (quantity-ml uint))
-  (let
-    (
+  (let (
       (donor-id-opt (map-get? donor-address-to-id tx-sender))
       (new-donation-id (+ (var-get donation-id-counter) u1))
     )
     (asserts! (> quantity-ml u0) ERR-INVALID-QUANTITY)
     (asserts! (is-some donor-id-opt) ERR-DONOR-NOT-FOUND)
-    
-    (let
-      (
+
+    (let (
         (donor-id (unwrap-panic donor-id-opt))
         (donor-info (unwrap! (map-get? donors { donor-id: donor-id }) ERR-DONOR-NOT-FOUND))
       )
       (asserts! (get is-eligible donor-info) ERR-DONOR-NOT-ELIGIBLE)
-      (asserts! (is-donor-eligible (get last-donation-block donor-info)) ERR-DONOR-NOT-ELIGIBLE)
-      
-      ;; Create donation record
-      (map-set donations
-        { donation-id: new-donation-id }
-        {
-          donor-id: donor-id,
-          blood-type: (get blood-type donor-info),
-          quantity-ml: quantity-ml,
-          donation-block: block-height,
-          status: STATUS-COLLECTED,
-          hospital-address: none,
-          expiry-block: (calculate-expiry-block)
-        }
+      (asserts! (is-donor-eligible (get last-donation-block donor-info))
+        ERR-DONOR-NOT-ELIGIBLE
       )
-      
+
+      ;; Create donation record
+      (map-set donations { donation-id: new-donation-id } {
+        donor-id: donor-id,
+        blood-type: (get blood-type donor-info),
+        quantity-ml: quantity-ml,
+        donation-block: block-height,
+        status: STATUS-COLLECTED,
+        hospital-address: none,
+        expiry-block: (calculate-expiry-block),
+      })
+
       ;; Update donor information
-      (map-set donors
-        { donor-id: donor-id }
+      (map-set donors { donor-id: donor-id }
         (merge donor-info {
           last-donation-block: block-height,
-          total-donations: (+ (get total-donations donor-info) u1)
+          total-donations: (+ (get total-donations donor-info) u1),
         })
       )
-      
+
       (var-set donation-id-counter new-donation-id)
       (ok new-donation-id)
     )
@@ -186,70 +211,72 @@
 
 ;; Approve donation and add to inventory (hospital/admin only)
 (define-public (approve-donation (donation-id uint))
-  (let
-    (
-      (donation-info (unwrap! (map-get? donations { donation-id: donation-id }) ERR-DONATION-NOT-FOUND))
+  (let (
+      (donation-info (unwrap! (map-get? donations { donation-id: donation-id })
+        ERR-DONATION-NOT-FOUND
+      ))
       (blood-type (get blood-type donation-info))
       (quantity (get quantity-ml donation-info))
-      (current-inventory (unwrap! (map-get? blood-inventory { blood-type: blood-type }) ERR-INVALID-BLOOD-TYPE))
+      (current-inventory (unwrap! (map-get? blood-inventory { blood-type: blood-type })
+        ERR-INVALID-BLOOD-TYPE
+      ))
     )
     (asserts! (is-eq (get status donation-info) STATUS-TESTED) ERR-UNAUTHORIZED)
     (asserts! (< block-height (get expiry-block donation-info)) ERR-UNAUTHORIZED)
-    
+
     ;; Update donation status
-    (map-set donations
-      { donation-id: donation-id }
+    (map-set donations { donation-id: donation-id }
       (merge donation-info { status: STATUS-APPROVED })
     )
-    
+
     ;; Add to inventory
-    (map-set blood-inventory
-      { blood-type: blood-type }
-      {
-        available-ml: (+ (get available-ml current-inventory) quantity),
-        reserved-ml: (get reserved-ml current-inventory)
-      }
-    )
-    
+    (map-set blood-inventory { blood-type: blood-type } {
+      available-ml: (+ (get available-ml current-inventory) quantity),
+      reserved-ml: (get reserved-ml current-inventory),
+    })
+
     (ok true)
   )
 )
 
 ;; Update donation status (testing complete)
-(define-public (update-donation-status (donation-id uint) (new-status uint))
-  (let
-    (
-      (donation-info (unwrap! (map-get? donations { donation-id: donation-id }) ERR-DONATION-NOT-FOUND))
-    )
+(define-public (update-donation-status
+    (donation-id uint)
+    (new-status uint)
+  )
+  (let ((donation-info (unwrap! (map-get? donations { donation-id: donation-id })
+      ERR-DONATION-NOT-FOUND
+    )))
     (asserts! (is-eq tx-sender contract-owner) ERR-UNAUTHORIZED)
     (asserts! (<= new-status STATUS-EXPIRED) ERR-UNAUTHORIZED)
-    
-    (map-set donations
-      { donation-id: donation-id }
+
+    (map-set donations { donation-id: donation-id }
       (merge donation-info { status: new-status })
     )
-    
+
     (ok true)
   )
 )
 
 ;; Reserve blood for hospital use
-(define-public (reserve-blood (blood-type uint) (quantity-ml uint) (hospital-address principal))
-  (let
-    (
-      (current-inventory (unwrap! (map-get? blood-inventory { blood-type: blood-type }) ERR-INVALID-BLOOD-TYPE))
-    )
+(define-public (reserve-blood
+    (blood-type uint)
+    (quantity-ml uint)
+    (hospital-address principal)
+  )
+  (let ((current-inventory (unwrap! (map-get? blood-inventory { blood-type: blood-type })
+      ERR-INVALID-BLOOD-TYPE
+    )))
     (asserts! (is-eq tx-sender contract-owner) ERR-UNAUTHORIZED)
-    (asserts! (>= (get available-ml current-inventory) quantity-ml) ERR-INSUFFICIENT-INVENTORY)
-    
-    (map-set blood-inventory
-      { blood-type: blood-type }
-      {
-        available-ml: (- (get available-ml current-inventory) quantity-ml),
-        reserved-ml: (+ (get reserved-ml current-inventory) quantity-ml)
-      }
+    (asserts! (>= (get available-ml current-inventory) quantity-ml)
+      ERR-INSUFFICIENT-INVENTORY
     )
-    
+
+    (map-set blood-inventory { blood-type: blood-type } {
+      available-ml: (- (get available-ml current-inventory) quantity-ml),
+      reserved-ml: (+ (get reserved-ml current-inventory) quantity-ml),
+    })
+
     (ok true)
   )
 )
@@ -290,30 +317,67 @@
 
 ;; Get total available blood of all types
 (define-read-only (get-total-inventory)
-  (let
-    (
-      (o-pos (default-to { available-ml: u0, reserved-ml: u0 } (map-get? blood-inventory { blood-type: BLOOD-TYPE-O-POS })))
-      (o-neg (default-to { available-ml: u0, reserved-ml: u0 } (map-get? blood-inventory { blood-type: BLOOD-TYPE-O-NEG })))
-      (a-pos (default-to { available-ml: u0, reserved-ml: u0 } (map-get? blood-inventory { blood-type: BLOOD-TYPE-A-POS })))
-      (a-neg (default-to { available-ml: u0, reserved-ml: u0 } (map-get? blood-inventory { blood-type: BLOOD-TYPE-A-NEG })))
-      (b-pos (default-to { available-ml: u0, reserved-ml: u0 } (map-get? blood-inventory { blood-type: BLOOD-TYPE-B-POS })))
-      (b-neg (default-to { available-ml: u0, reserved-ml: u0 } (map-get? blood-inventory { blood-type: BLOOD-TYPE-B-NEG })))
-      (ab-pos (default-to { available-ml: u0, reserved-ml: u0 } (map-get? blood-inventory { blood-type: BLOOD-TYPE-AB-POS })))
-      (ab-neg (default-to { available-ml: u0, reserved-ml: u0 } (map-get? blood-inventory { blood-type: BLOOD-TYPE-AB-NEG })))
+  (let (
+      (o-pos (default-to {
+        available-ml: u0,
+        reserved-ml: u0,
+      }
+        (map-get? blood-inventory { blood-type: BLOOD-TYPE-O-POS })
+      ))
+      (o-neg (default-to {
+        available-ml: u0,
+        reserved-ml: u0,
+      }
+        (map-get? blood-inventory { blood-type: BLOOD-TYPE-O-NEG })
+      ))
+      (a-pos (default-to {
+        available-ml: u0,
+        reserved-ml: u0,
+      }
+        (map-get? blood-inventory { blood-type: BLOOD-TYPE-A-POS })
+      ))
+      (a-neg (default-to {
+        available-ml: u0,
+        reserved-ml: u0,
+      }
+        (map-get? blood-inventory { blood-type: BLOOD-TYPE-A-NEG })
+      ))
+      (b-pos (default-to {
+        available-ml: u0,
+        reserved-ml: u0,
+      }
+        (map-get? blood-inventory { blood-type: BLOOD-TYPE-B-POS })
+      ))
+      (b-neg (default-to {
+        available-ml: u0,
+        reserved-ml: u0,
+      }
+        (map-get? blood-inventory { blood-type: BLOOD-TYPE-B-NEG })
+      ))
+      (ab-pos (default-to {
+        available-ml: u0,
+        reserved-ml: u0,
+      }
+        (map-get? blood-inventory { blood-type: BLOOD-TYPE-AB-POS })
+      ))
+      (ab-neg (default-to {
+        available-ml: u0,
+        reserved-ml: u0,
+      }
+        (map-get? blood-inventory { blood-type: BLOOD-TYPE-AB-NEG })
+      ))
     )
     {
-      total-available-ml: (+
-        (get available-ml o-pos) (get available-ml o-neg)
+      total-available-ml: (+ (get available-ml o-pos) (get available-ml o-neg)
         (get available-ml a-pos) (get available-ml a-neg)
         (get available-ml b-pos) (get available-ml b-neg)
         (get available-ml ab-pos) (get available-ml ab-neg)
       ),
-      total-reserved-ml: (+
-        (get reserved-ml o-pos) (get reserved-ml o-neg)
-        (get reserved-ml a-pos) (get reserved-ml a-neg)
-        (get reserved-ml b-pos) (get reserved-ml b-neg)
-        (get reserved-ml ab-pos) (get reserved-ml ab-neg)
-      )
+      total-reserved-ml: (+ (get reserved-ml o-pos) (get reserved-ml o-neg) (get reserved-ml a-pos)
+        (get reserved-ml a-neg) (get reserved-ml b-pos)
+        (get reserved-ml b-neg) (get reserved-ml ab-pos)
+        (get reserved-ml ab-neg)
+      ),
     }
   )
 )
@@ -327,6 +391,102 @@
 (define-read-only (get-counters)
   {
     total-donors: (var-get donor-id-counter),
-    total-donations: (var-get donation-id-counter)
+    total-donations: (var-get donation-id-counter),
   }
+)
+
+(define-map hospital-reservations
+  {
+    hospital: principal,
+    blood-type: uint,
+  }
+  { reserved-ml: uint }
+)
+
+(define-public (reserve-blood-for-hospital
+    (hospital principal)
+    (blood-type uint)
+    (quantity-ml uint)
+  )
+  (let (
+      (current-inventory (unwrap! (map-get? blood-inventory { blood-type: blood-type })
+        ERR-INVALID-BLOOD-TYPE
+      ))
+      (current-hospital-reservation (default-to { reserved-ml: u0 }
+        (map-get? hospital-reservations {
+          hospital: hospital,
+          blood-type: blood-type,
+        })
+      ))
+    )
+    (asserts! (is-eq tx-sender contract-owner) ERR-UNAUTHORIZED)
+    (asserts! (is-valid-blood-type blood-type) ERR-INVALID-BLOOD-TYPE)
+    (asserts! (> quantity-ml u0) ERR-INVALID-QUANTITY)
+    (asserts! (>= (get available-ml current-inventory) quantity-ml)
+      ERR-INSUFFICIENT-INVENTORY
+    )
+
+    (map-set blood-inventory { blood-type: blood-type } {
+      available-ml: (- (get available-ml current-inventory) quantity-ml),
+      reserved-ml: (+ (get reserved-ml current-inventory) quantity-ml),
+    })
+
+    (map-set hospital-reservations {
+      hospital: hospital,
+      blood-type: blood-type,
+    } { reserved-ml: (+ (get reserved-ml current-hospital-reservation) quantity-ml) }
+    )
+
+    (ok true)
+  )
+)
+
+(define-public (consume-reservation
+    (blood-type uint)
+    (quantity-ml uint)
+  )
+  (let (
+      (current-inventory (unwrap! (map-get? blood-inventory { blood-type: blood-type })
+        ERR-INVALID-BLOOD-TYPE
+      ))
+      (current-hospital-reservation (unwrap!
+        (map-get? hospital-reservations {
+          hospital: tx-sender,
+          blood-type: blood-type,
+        })
+        ERR-INSUFFICIENT-INVENTORY
+      ))
+    )
+    (asserts! (is-hospital-authorized tx-sender) ERR-UNAUTHORIZED)
+    (asserts! (is-valid-blood-type blood-type) ERR-INVALID-BLOOD-TYPE)
+    (asserts! (> quantity-ml u0) ERR-INVALID-QUANTITY)
+    (asserts! (>= (get reserved-ml current-hospital-reservation) quantity-ml)
+      ERR-INSUFFICIENT-INVENTORY
+    )
+
+    (map-set hospital-reservations {
+      hospital: tx-sender,
+      blood-type: blood-type,
+    } { reserved-ml: (- (get reserved-ml current-hospital-reservation) quantity-ml) }
+    )
+
+    (map-set blood-inventory { blood-type: blood-type } {
+      available-ml: (get available-ml current-inventory),
+      reserved-ml: (- (get reserved-ml current-inventory) quantity-ml),
+    })
+
+    (ok true)
+  )
+)
+
+(define-read-only (get-hospital-reservation
+    (hospital principal)
+    (blood-type uint)
+  )
+  (default-to { reserved-ml: u0 }
+    (map-get? hospital-reservations {
+      hospital: hospital,
+      blood-type: blood-type,
+    })
+  )
 )
